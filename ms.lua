@@ -80,7 +80,7 @@ if game.PlaceId == 1417427737 then
         return result;
     end
 
-    local RunService = game:GetService("RunService").Stepped
+    local RunService = game:GetService("RunService").Heartbeat
     local HumanoidRootPart = game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
     local depth = Split(game.Players.LocalPlayer.PlayerGui.ScreenGui.TopInfoFrame.Depth.Text," ")
     while tonumber(depth[1]) < Depth do
@@ -168,7 +168,7 @@ if game.PlaceId == 1417427737 then
         return tonumber(Inventory[1])
     end
 
-    local RunService = game:GetService("RunService").Stepped
+    local RunService = game:GetService("RunService").Heartbeat
     local HumanoidRootPart = game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
     local Character = game.Players.LocalPlayer.Character
     local SellArea = CFrame.new(41.7637215, 12.99999, -1239.93433)
@@ -199,7 +199,7 @@ if game.PlaceId == 1417427737 then
                             while (HumanoidRootPart.Position - SavedPosition).Magnitude > 1 do
                                 HumanoidRootPart.CFrame = CFrame.new(18, SavedPosition.Y, 26220)
                                 RunService:Wait()
-                                if os.time() - starttime1 > 3.5 then
+                                if os.time() - starttime1 > 1 then
                                     break   
                                 end
                             end
