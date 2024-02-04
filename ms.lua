@@ -4,7 +4,6 @@ local SellTreshold = getgenv().SellTreshold or 60000
 local Depth = getgenv().Depth or 205
 
 
-do
 game:GetService("Players").LocalPlayer.PlayerGui:WaitForChild("ScreenGui")
 while game:GetService("Players").LocalPlayer.PlayerGui.ScreenGui.LoadingFrame.BackgroundTransparency == 0 do
     for i, connection in pairs(getconnections(game:GetService("Players").LocalPlayer.PlayerGui.ScreenGui.LoadingFrame.Quality.LowQuality.MouseButton1Down)) do
@@ -25,7 +24,7 @@ end
 game:GetService("Players").LocalPlayer.PlayerGui.ScreenGui.TeleporterFrame:Destroy()
 game:GetService("Players").LocalPlayer.PlayerGui.ScreenGui.StatsFrame.Sell:Destroy()
 game:GetService("Players").LocalPlayer.PlayerGui.ScreenGui.MainButtons.Surface:Destroy()
-end
+
 
 local vuAF = game:GetService("VirtualUser")
 game:GetService("Players").LocalPlayer.Idled:connect(function()
@@ -44,14 +43,12 @@ if Workspace.Collapsed.Value == true then
 end
 end)
 
-do
 local Data = getsenv(game:GetService("Players").LocalPlayer.PlayerGui.ScreenGui.ClientScript).displayCurrent
 local Values = getupvalue(Data,8)
 Remote = Values["RemoteEvent"]
 Data, Values = nil
-end
 
-do
+
 local HumanoidRootPart = game.Players.LocalPlayer.Character.HumanoidRootPart
 game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 0
 game.Players.LocalPlayer.Character.Humanoid.JumpPower = 0
@@ -72,9 +69,7 @@ while HumanoidRootPart.Position.Z > 26220 do
     wait()
 end
 HumanoidRootPart.CFrame = CFrame.new(18, 10, 26220)
-end
 
-do
 local function Split(s, delimiter)
     result = {};
     for match in (s..delimiter):gmatch("(.-)"..delimiter) do
@@ -82,6 +77,7 @@ local function Split(s, delimiter)
     end
     return result;
 end
+
 local RunService = game:GetService("RunService").Stepped
 local HumanoidRootPart = game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
 local depth = Split(game.Players.LocalPlayer.PlayerGui.ScreenGui.TopInfoFrame.Depth.Text," ")
@@ -97,17 +93,13 @@ while tonumber(depth[1]) < Depth do
     depth = Split(game.Players.LocalPlayer.PlayerGui.ScreenGui.TopInfoFrame.Depth.Text," ")
     wait()
 end
-end
 
-do
 local CoinsAmount = game.Players.LocalPlayer.leaderstats.Coins
 local function GetCoinsAmount()
     local Amount = CoinsAmount.Value
     Amount = Amount:gsub(',', '')
-    
     return tonumber(Amount)
 end
-
 local function comma_value(amount)
     local formatted = amount
     while true do
@@ -118,7 +110,6 @@ local function comma_value(amount)
     end
     return formatted
 end
-
 local function Split(s, delimiter)
     result = {};
     for match in (s..delimiter):gmatch("(.-)"..delimiter) do
@@ -126,6 +117,7 @@ local function Split(s, delimiter)
     end
     return result;
 end
+
 local recovering = false
 local DepthAmount = game.Players.LocalPlayer.PlayerGui.ScreenGui.TopInfoFrame.Depth
 DepthAmount.Changed:connect(function()
@@ -216,5 +208,4 @@ while true do
         end
     end
     RunService:Wait()
-end
 end
