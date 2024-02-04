@@ -1,4 +1,4 @@
-if game.PlaceId == 155615604 then
+if game.PlaceId == 1417427737 then
 
     repeat task.wait() until game:IsLoaded()
 
