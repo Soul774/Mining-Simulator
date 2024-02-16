@@ -12,7 +12,7 @@ if game.PlaceId == 1417427737 then
 
     repeat task.wait(1) until game:IsLoaded()
 
-    local SellTreshold = getgenv().SellTreshold or 47376
+    local SellTreshold = getgenv().SellTreshold or 30000
     local Depth = getgenv().Depth or 205
 
     local Players = game:GetService("Players")
