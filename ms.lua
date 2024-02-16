@@ -34,7 +34,7 @@ if game.PlaceId == 1417427737 then
         end
         task.wait(1)
     end
-    
+
     if Players.LocalPlayer.PlayerGui.ScreenGui:FindFirstChild("TeleporterFrame") then
         Players.LocalPlayer.PlayerGui.ScreenGui.TeleporterFrame:Destroy()
     end
@@ -82,7 +82,7 @@ if game.PlaceId == 1417427737 then
     HumanoidRootPart.Anchored = false
     while HumanoidRootPart.Position.Z > 26220 do
         HumanoidRootPart.CFrame = CFrame.new(Vector3.new(HumanoidRootPart.Position.X,13.05,HumanoidRootPart.Position.Z-0.5))
-        task.wait()
+        task.wait(0.01)
     end
     HumanoidRootPart.CFrame = CFrame.new(18, 10, 26220)
 
@@ -149,7 +149,7 @@ if game.PlaceId == 1417427737 then
                 HumanoidRootPart.Anchored = false
                 while HumanoidRootPart.Position.Z > 26220 do
                     HumanoidRootPart.CFrame = CFrame.new(Vector3.new(HumanoidRootPart.Position.X,13.05,HumanoidRootPart.Position.Z-0.5))
-                    task.wait(0.5)
+                    task.wait(0.01)
                 end
                 HumanoidRootPart.CFrame = CFrame.new(18, 10, 26220)
                 task.wait(5)
@@ -179,7 +179,6 @@ if game.PlaceId == 1417427737 then
     local HumanoidRootPart = game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
     local Character = game.Players.LocalPlayer.Character
     local SellArea = CFrame.new(41.96064, 13.8550873, -1239.64648)
-    --local SellArea2 = CFrame.new(-36.3272514, 15.3913641, 22553.002) -- forest sell
     while task.wait() do
         if HumanoidRootPart then
             local minp = HumanoidRootPart.CFrame + Vector3.new(-5,-5,-5)
