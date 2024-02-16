@@ -15,8 +15,44 @@ if game.PlaceId == 1417427737 then
     local SellTreshold = getgenv().SellTreshold or 30000
     local Depth = getgenv().Depth or 205
 
-    local Players = game:GetService("Players")
+--ping display
+    local ScreenGui = Instance.new("ScreenGui")
+    local Ping = Instance.new("TextLabel")
+    ScreenGui.Parent = game.CoreGui
+    ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    Ping.Name = "Ping"
+    Ping.Parent = ScreenGui
+    Ping.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Ping.BackgroundTransparency = 1.000
+    Ping.BorderColor3 = Color3.fromRGB(255, 255, 255)
+    Ping.Position = UDim2.new(0.700000048, 0, 0, 0)
+    Ping.Size = UDim2.new(0, 125, 0, 25)
+    Ping.Font = Enum.Font.SourceSans
+    Ping.TextColor3 = Color3.fromRGB(253, 253, 253)
+    Ping.TextScaled = true
+    Ping.TextSize = 14.000
+    Ping.TextWrapped = true
 
+    local script = Instance.new('LocalScript', Ping)
+    local RunService = game:GetService("RunService")
+    RunService.RenderStepped:Connect(function(ping) 
+        script.Parent.Text = ("Ping: " ..game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString(math.round(2/ping))) -- your ping
+    end)
+--
+    -- rejoin/reconnect when dc
+    repeat task.wait() until game.CoreGui:FindFirstChild('RobloxPromptGui')
+    local lp,po,ts = game:GetService('Players').LocalPlayer,game.CoreGui.RobloxPromptGui.promptOverlay,game:GetService('TeleportService')
+    po.ChildAdded:connect(function(a)
+        if a.Name == 'ErrorPrompt' then
+            repeat
+                ts:Teleport(game.PlaceId)
+                task.wait(2)
+            until false
+        end
+    end)
+
+--Main
+    local Players = game:GetService("Players")
     Players.LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("ScreenGui")
     while Players.LocalPlayer.PlayerGui.ScreenGui.LoadingFrame.BackgroundTransparency == 0 do
         for i, connection in pairs(getconnections(Players.LocalPlayer.PlayerGui.ScreenGui.LoadingFrame.Quality.LowQuality.MouseButton1Down)) do
@@ -44,13 +80,6 @@ if game.PlaceId == 1417427737 then
     if Players.LocalPlayer.PlayerGui.ScreenGui.MainButtons:FindFirstChild("Surface") then
         Players.LocalPlayer.PlayerGui.ScreenGui.MainButtons.Surface:Destroy()
     end
-
-    local vuAF = game:GetService("VirtualUser")
-    Players.LocalPlayer.Idled:connect(function()
-    vuAF:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
-    task.wait(1)
-    vuAF:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
-    end)
 
     local Remote
 
@@ -178,7 +207,7 @@ if game.PlaceId == 1417427737 then
     local RunService = game:GetService("RunService").Heartbeat
     local HumanoidRootPart = game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
     local Character = game.Players.LocalPlayer.Character
-    local SellArea = CFrame.new(41.96064, 13.8550873, -1239.64648)
+    local SellArea = CFrame.new(41.96064, 16.756, -1239.64648)
     while task.wait() do
         if HumanoidRootPart then
             local minp = HumanoidRootPart.CFrame + Vector3.new(-5,-5,-5)
@@ -215,18 +244,4 @@ if game.PlaceId == 1417427737 then
             end
         end
     end
-
-    -- rejoin/reconnect when dc
-
-    repeat task.wait() until game.CoreGui:FindFirstChild('RobloxPromptGui')
-    local lp,po,ts = game:GetService('Players').LocalPlayer,game.CoreGui.RobloxPromptGui.promptOverlay,game:GetService('TeleportService')
-    po.ChildAdded:connect(function(a)
-        if a.Name == 'ErrorPrompt' then
-            repeat
-                ts:Teleport(game.PlaceId)
-                task.wait(2)
-            until false
-        end
-    end)
-
 end
