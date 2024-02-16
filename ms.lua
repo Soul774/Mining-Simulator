@@ -1,3 +1,15 @@
+local Players = game:GetService("Players")
+
+queueteleport = (syn and syn.queue_on_teleport) or queue_on_teleport or (fluxus and fluxus.queue_on_teleport)
+
+local TeleportCheck = false
+Players.LocalPlayer.OnTeleport:Connect(function(State)
+    if queueteleport and (not TeleportCheck) then
+        TeleportCheck = true
+        queueteleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/Soul774/Mining-Simulator/main/ms.lua'))()")
+    end
+end)
+
 if game.PlaceId == 1417427737 then
 
     repeat task.wait(1) until game:IsLoaded()
@@ -208,7 +220,7 @@ if game.PlaceId == 1417427737 then
     end
 
     -- rejoin/reconnect when dc
-    
+
     repeat task.wait(5) until game.CoreGui:FindFirstChild('RobloxPromptGui')
     local lp,po,ts = game:GetService('Players').LocalPlayer,game.CoreGui.RobloxPromptGui.promptOverlay,game:GetService('TeleportService')
     po.ChildAdded:connect(function(a)
