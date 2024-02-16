@@ -1,7 +1,5 @@
-local Players = game:GetService("Players")
-
 queueteleport = (syn and syn.queue_on_teleport) or queue_on_teleport or (fluxus and fluxus.queue_on_teleport)
-
+local Players = game:GetService("Players")
 local TeleportCheck = false
 Players.LocalPlayer.OnTeleport:Connect(function(State)
     if queueteleport and (not TeleportCheck) then
@@ -151,7 +149,7 @@ if game.PlaceId == 1417427737 then
                 HumanoidRootPart.Anchored = false
                 while HumanoidRootPart.Position.Z > 26220 do
                     HumanoidRootPart.CFrame = CFrame.new(Vector3.new(HumanoidRootPart.Position.X,13.05,HumanoidRootPart.Position.Z-0.5))
-                    task.wait()
+                    task.wait(0.5)
                 end
                 HumanoidRootPart.CFrame = CFrame.new(18, 10, 26220)
                 task.wait(5)
@@ -180,7 +178,7 @@ if game.PlaceId == 1417427737 then
     local RunService = game:GetService("RunService").Heartbeat
     local HumanoidRootPart = game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
     local Character = game.Players.LocalPlayer.Character
-    local SellArea = CFrame.new(41.96064, 15.8550873, -1239.64648)
+    local SellArea = CFrame.new(41.96064, 13.8550873, -1239.64648)
     --local SellArea2 = CFrame.new(-36.3272514, 15.3913641, 22553.002) -- forest sell
     while task.wait() do
         if HumanoidRootPart then
