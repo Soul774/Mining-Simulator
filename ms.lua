@@ -15,42 +15,6 @@ if game.PlaceId == 1417427737 then
     local SellTreshold = getgenv().SellTreshold or 30000
     local Depth = getgenv().Depth or 205
 
---ping display
-    local ScreenGui = Instance.new("ScreenGui")
-    local Ping = Instance.new("TextLabel")
-    ScreenGui.Parent = game.CoreGui
-    ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    Ping.Name = "Ping"
-    Ping.Parent = ScreenGui
-    Ping.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    Ping.BackgroundTransparency = 1.000
-    Ping.BorderColor3 = Color3.fromRGB(255, 255, 255)
-    Ping.Position = UDim2.new(0.700000048, 0, 0, 0)
-    Ping.Size = UDim2.new(0, 125, 0, 25)
-    Ping.Font = Enum.Font.SourceSans
-    Ping.TextColor3 = Color3.fromRGB(253, 253, 253)
-    Ping.TextScaled = true
-    Ping.TextSize = 14.000
-    Ping.TextWrapped = true
-
-    local script = Instance.new('LocalScript', Ping)
-    local RunService = game:GetService("RunService")
-    RunService.RenderStepped:Connect(function(ping) 
-        script.Parent.Text = ("Ping: " ..game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString(math.round(2/ping))) -- your ping
-    end)
---
-    -- rejoin/reconnect when dc
-    repeat task.wait() until game.CoreGui:FindFirstChild('RobloxPromptGui')
-    local lp,po,ts = game:GetService('Players').LocalPlayer,game.CoreGui.RobloxPromptGui.promptOverlay,game:GetService('TeleportService')
-    po.ChildAdded:connect(function(a)
-        if a.Name == 'ErrorPrompt' then
-            repeat
-                ts:Teleport(game.PlaceId)
-                task.wait(2)
-            until false
-        end
-    end)
-
 --Main
     local Players = game:GetService("Players")
     Players.LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("ScreenGui")
@@ -244,4 +208,40 @@ if game.PlaceId == 1417427737 then
             end
         end
     end
+
+    --ping display
+    local ScreenGui = Instance.new("ScreenGui")
+    local Ping = Instance.new("TextLabel")
+    ScreenGui.Parent = game.CoreGui
+    ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    Ping.Name = "Ping"
+    Ping.Parent = ScreenGui
+    Ping.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Ping.BackgroundTransparency = 1.000
+    Ping.BorderColor3 = Color3.fromRGB(255, 255, 255)
+    Ping.Position = UDim2.new(0.700000048, 0, 0, 0)
+    Ping.Size = UDim2.new(0, 125, 0, 25)
+    Ping.Font = Enum.Font.SourceSans
+    Ping.TextColor3 = Color3.fromRGB(253, 253, 253)
+    Ping.TextScaled = true
+    Ping.TextSize = 14.000
+    Ping.TextWrapped = true
+
+    local script = Instance.new('LocalScript', Ping)
+    local RunService = game:GetService("RunService")
+    RunService.RenderStepped:Connect(function(ping) 
+        script.Parent.Text = ("Ping: " ..game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString(math.round(2/ping))) -- your ping
+    end)
+    --
+    -- rejoin/reconnect when dc
+    repeat task.wait() until game.CoreGui:FindFirstChild('RobloxPromptGui')
+    local lp,po,ts = game:GetService('Players').LocalPlayer,game.CoreGui.RobloxPromptGui.promptOverlay,game:GetService('TeleportService')
+    po.ChildAdded:connect(function(a)
+        if a.Name == 'ErrorPrompt' then
+            repeat
+                ts:Teleport(game.PlaceId)
+                task.wait(2)
+            until false
+        end
+    end)
 end
