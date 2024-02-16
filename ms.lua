@@ -219,11 +219,10 @@ if game.PlaceId == 1417427737 then
 
     -- rejoin/reconnect when dc
 
-    repeat task.wait(5) until game.CoreGui:FindFirstChild('RobloxPromptGui')
+    repeat task.wait() until game.CoreGui:FindFirstChild('RobloxPromptGui')
     local lp,po,ts = game:GetService('Players').LocalPlayer,game.CoreGui.RobloxPromptGui.promptOverlay,game:GetService('TeleportService')
     po.ChildAdded:connect(function(a)
         if a.Name == 'ErrorPrompt' then
-            task.wait(10)
             repeat
                 ts:Teleport(game.PlaceId)
                 task.wait(2)
