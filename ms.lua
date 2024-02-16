@@ -1,6 +1,7 @@
 if game.PlaceId == 1417427737 then
 
-    repeat task.wait() until game:IsLoaded()
+    repeat task.wait(1) until game:IsLoaded()
+
     local SellTreshold = getgenv().SellTreshold or 47376
     local Depth = getgenv().Depth or 205
 
@@ -45,7 +46,7 @@ if game.PlaceId == 1417427737 then
 
     Workspace.Collapsed.Changed:connect(function()
     if Workspace.Collapsed.Value == true then
-        game:GetService("TeleportService"):Teleport(game.PlaceId, game:GetService("Players").LocalPlayer)
+        game:GetService("TeleportService"):Teleport(game.PlaceId, game:GetService("Players").LocalPlayer) -- rejoin part
         end
     end)        
 
@@ -167,7 +168,8 @@ if game.PlaceId == 1417427737 then
     local RunService = game:GetService("RunService").Heartbeat
     local HumanoidRootPart = game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
     local Character = game.Players.LocalPlayer.Character
-    local SellArea = CFrame.new(41.96064, 15.8550873, -1239.64648, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+    local SellArea = CFrame.new(41.96064, 15.8550873, -1239.64648)
+    --local SellArea2 = CFrame.new(-36.3272514, 15.3913641, 22553.002) -- forest sell
     while task.wait() do
         if HumanoidRootPart then
             local minp = HumanoidRootPart.CFrame + Vector3.new(-5,-5,-5)
@@ -176,7 +178,6 @@ if game.PlaceId == 1417427737 then
             local parts = workspace:FindPartsInRegion3WithWhiteList(region, {game.Workspace.Blocks}, 50) --  ignore part
             for each, block in pairs(parts) do
                 if block:IsA("BasePart") then
-                    Remote:FireServer("MineBlock",{{block.Parent}})
                     Remote:FireServer("MineBlock",{{block.Parent}})
                     repeat
                         RunService:Wait()
@@ -205,4 +206,19 @@ if game.PlaceId == 1417427737 then
             end
         end
     end
+
+    -- rejoin/reconnect when dc
+    
+    repeat task.wait(5) until game.CoreGui:FindFirstChild('RobloxPromptGui')
+    local lp,po,ts = game:GetService('Players').LocalPlayer,game.CoreGui.RobloxPromptGui.promptOverlay,game:GetService('TeleportService')
+    po.ChildAdded:connect(function(a)
+        if a.Name == 'ErrorPrompt' then
+            task.wait(10)
+            repeat
+                ts:Teleport(game.PlaceId)
+                task.wait(2)
+            until false
+        end
+    end)
+
 end
