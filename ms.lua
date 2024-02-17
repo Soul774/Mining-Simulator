@@ -8,14 +8,11 @@ Players.LocalPlayer.OnTeleport:Connect(function(State)
     end
 end)
 
-if game.PlaceId == 1417427737 then
-
-    repeat task.wait(1) until game:IsLoaded()
+if game.PlaceId == 1417427737 then repeat task.wait(1) until game:IsLoaded()
 
     local SellTreshold = getgenv().SellTreshold or 30000
     local Depth = getgenv().Depth or 205
 
---Main
     local Players = game:GetService("Players")
     Players.LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("ScreenGui")
     while Players.LocalPlayer.PlayerGui.ScreenGui.LoadingFrame.BackgroundTransparency == 0 do
@@ -44,14 +41,34 @@ if game.PlaceId == 1417427737 then
     if Players.LocalPlayer.PlayerGui.ScreenGui.MainButtons:FindFirstChild("Surface") then
         Players.LocalPlayer.PlayerGui.ScreenGui.MainButtons.Surface:Destroy()
     end
+    if Players.LocalPlayer.PlayerGui.ScreenGui.Collapse:FindFirstChild("Progress") then
+        Players.LocalPlayer.PlayerGui.ScreenGui.Collapse.Visible = true
+    end
 
-    local Remote
+    local ExampleFrame = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("ScreenGui"):WaitForChild("StatsFrame"):WaitForChild("Tokens")
+    local Rebirths = game:GetService("Players").LocalPlayer.leaderstats.Rebirths
 
+    local Rebirths2 = ExampleFrame:Clone()
+    Rebirths2.Parent = ExampleFrame.Parent
+    Rebirths2.Position = UDim2.new(0, 0, 1.5, 15)
+    Rebirths2.Logo.Image = "rbxassetid://1440681030"
+    Rebirths2.Amount.Text = tostring(Rebirths.Value)
+    Rebirths:GetPropertyChangedSignal("Value"):Connect(function()
+        Rebirths2.Amount.Text = tostring(Rebirths.Value)
+    end)
+
+-- Anti afk
+    game:GetService("Players").LocalPlayer.Idled:connect(function()
+        game:GetService("VirtualUser"):ClickButton2(Vector2.new())
+    end)
+--Rejoin
     Workspace.Collapsed.Changed:connect(function()
     if Workspace.Collapsed.Value == true then
-        game:GetService("TeleportService"):Teleport(game.PlaceId, game:GetService("Players").LocalPlayer) -- rejoin part
+        game:GetService("TeleportService"):Teleport(game.PlaceId, game:GetService("Players").LocalPlayer)
         end
-    end)        
+    end)    
+
+    local Remote
 
     local Data = getsenv(Players.LocalPlayer.PlayerGui.ScreenGui.ClientScript).displayCurrent
     local Values = getupvalue(Data,8)
@@ -59,22 +76,23 @@ if game.PlaceId == 1417427737 then
     Data, Values = nil
 
     local HumanoidRootPart = game.Players.LocalPlayer.Character.HumanoidRootPart
-    game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 0
-    game.Players.LocalPlayer.Character.Humanoid.JumpPower = 0
+    local humanoid = game.Players.LocalPlayer.Character.Humanoid
+    humanoid.WalkSpeed = 0
+    humanoid.JumpPower = 0
     HumanoidRootPart.Anchored = true
     Remote:FireServer("MoveTo", {{"LavaSpawn"}})
     local className = "Part"
     local parent = game.Workspace
     local part = Instance.new(className, parent)
     part.Anchored = true
-    part.Size = Vector3.new(10, 0.5 , 100)
+    part.Size = Vector3.new(10, 1 , 100)
     part.Material = "ForceField"
     local pos = Vector3.new(21, 9.5, 26285)
     part.Position = pos
     task.wait(1)
     HumanoidRootPart.Anchored = false
     while HumanoidRootPart.Position.Z > 26220 do
-        HumanoidRootPart.CFrame = CFrame.new(Vector3.new(HumanoidRootPart.Position.X,13.05,HumanoidRootPart.Position.Z-0.5))
+        HumanoidRootPart.CFrame = CFrame.new(Vector3.new(HumanoidRootPart.Position.X, 13.05, HumanoidRootPart.Position.Z - 0.5))
         task.wait(0.01)
     end
     HumanoidRootPart.CFrame = CFrame.new(18, 10, 26220)
@@ -87,17 +105,16 @@ if game.PlaceId == 1417427737 then
         return result;
     end
 
-    local RunService = game:GetService("RunService").Heartbeat
-    local HumanoidRootPart = game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+--Dig to depth
     local depth = Split(game.Players.LocalPlayer.PlayerGui.ScreenGui.TopInfoFrame.Depth.Text," ")
     while tonumber(depth[1]) < Depth do
         local min = HumanoidRootPart.CFrame + Vector3.new(-1,-10,-1)
         local max = HumanoidRootPart.CFrame + Vector3.new(1,0,1)
         local region = Region3.new(min.Position, max.Position)
-        local parts = workspace:FindPartsInRegion3WithWhiteList(region, {game.Workspace.Blocks}, 5)
-        for each, block in pairs(parts) do
+        local parts = workspace:FindPartsInRegion3WithWhiteList(region, {game.Workspace.Blocks}, 10)
+        for _, block in pairs(parts) do
             Remote:FireServer("MineBlock",{{block.Parent}})
-            RunService:Wait()
+            task.wait()
         end
         depth = Split(game.Players.LocalPlayer.PlayerGui.ScreenGui.TopInfoFrame.Depth.Text," ")
         task.wait()
@@ -110,39 +127,26 @@ if game.PlaceId == 1417427737 then
         return tonumber(Amount)
     end
 
-    local function Split(s, delimiter)
-        result = {};
-        for match in (s..delimiter):gmatch("(.-)"..delimiter) do
-            table.insert(result, match);
-        end
-        return result;
-    end
-
+--Recover
     local recovering = false
-    local DepthAmount = game.Players.LocalPlayer.PlayerGui.ScreenGui.TopInfoFrame.Depth
-    DepthAmount.Changed:connect(function()
+    local player = game.Players.LocalPlayer
+    local DepthAmount = player.PlayerGui.ScreenGui.TopInfoFrame.Depth
+    DepthAmount.Changed:Connect(function()
         task.spawn(function()
-            local depth = Split(DepthAmount.Text," ")
-            if tonumber(depth[1]) >= 1000 then
+            local depth = Split(DepthAmount.Text, " ")
+            if tonumber(depth[1]) >= 1000 and not recovering then
                 recovering = true
-                local HumanoidRootPart = game.Players.LocalPlayer.Character.HumanoidRootPart
-                game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 0
-                game.Players.LocalPlayer.Character.Humanoid.JumpPower = 0
                 HumanoidRootPart.Anchored = true
+                task.wait(1)
                 Remote:FireServer("MoveTo", {{"LavaSpawn"}})
-                local className = "Part"
-                local parent = game.Workspace
-                local part = Instance.new(className, parent)
-                part.Anchored = true
-                part.Size = Vector3.new(10, 0.5 , 100)
-                part.Material = "ForceField"
+                wait(1)
                 local pos = Vector3.new(21, 9.5, 26285)
                 part.Position = pos
                 task.wait(1)
                 HumanoidRootPart.Anchored = false
                 while HumanoidRootPart.Position.Z > 26220 do
-                    HumanoidRootPart.CFrame = CFrame.new(Vector3.new(HumanoidRootPart.Position.X,13.05,HumanoidRootPart.Position.Z-0.5))
-                    task.wait(0.01)
+                    HumanoidRootPart.CFrame = CFrame.new(Vector3.new(HumanoidRootPart.Position.X, 13.05, HumanoidRootPart.Position.Z - 0.5))
+                    task.wait(0.05)
                 end
                 HumanoidRootPart.CFrame = CFrame.new(18, 10, 26220)
                 task.wait(5)
@@ -158,7 +162,7 @@ if game.PlaceId == 1417427737 then
             task.wait()
         end
     end)
-
+    
     local InventoryAmount = game.Players.LocalPlayer.PlayerGui.ScreenGui.StatsFrame2.Inventory.Amount
     local function GetInventoryAmount()
         local Amount = InventoryAmount.Text
@@ -168,80 +172,45 @@ if game.PlaceId == 1417427737 then
         return tonumber(Inventory[1])
     end
 
-    local RunService = game:GetService("RunService").Heartbeat
-    local HumanoidRootPart = game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
     local Character = game.Players.LocalPlayer.Character
-    local SellArea = CFrame.new(41.96064, 16.756, -1239.64648)
-    while task.wait() do
+    local SellArea = CFrame.new(41.96064, 16.755, -1239.64648)
+    while true do
+        task.wait()
         if HumanoidRootPart then
-            local minp = HumanoidRootPart.CFrame + Vector3.new(-5,-5,-5)
-            local maxp = HumanoidRootPart.CFrame + Vector3.new(5,5,5)
-            local region = Region3.new(minp.Position, maxp.Position)
-            local parts = workspace:FindPartsInRegion3WithWhiteList(region, {game.Workspace.Blocks}, 50) --  ignore part
-            for each, block in pairs(parts) do
+            local minp = HumanoidRootPart.CFrame.Position - Vector3.new(5, 5, 5)
+            local maxp = HumanoidRootPart.CFrame.Position + Vector3.new(5, 5, 5)
+            local region = Region3.new(minp, maxp)
+            local parts = workspace:FindPartsInRegion3WithWhiteList(region, {game.Workspace.Blocks}, 50)
+            for _, block in ipairs(parts) do
                 if block:IsA("BasePart") then
-                    Remote:FireServer("MineBlock",{{block.Parent}})
+                    Remote:FireServer("MineBlock", {{block.Parent}})
                     repeat
-                        RunService:Wait()
+                        task.wait()
                     until not recovering
                 end
                 if GetInventoryAmount() >= SellTreshold then
                     if Character and HumanoidRootPart then
-                            local SavedPosition = HumanoidRootPart.Position
-                            while GetInventoryAmount() >= SellTreshold do
-                                Remote:FireServer("SellItems",{{}})
-                                HumanoidRootPart.CFrame = SellArea
-                                RunService:Wait()
-                            end
+                        local SavedPosition = HumanoidRootPart.Position
+                        while GetInventoryAmount() >= SellTreshold do
+                            Remote:FireServer("SellItems", {{}})
+                            HumanoidRootPart.CFrame = SellArea
+                            repeat
+                                task.wait()
+                            until not recovering
+                        end
                         HumanoidRootPart.Anchored = true
-                            local starttime1 = os.time()
-                            while (HumanoidRootPart.Position - SavedPosition).Magnitude > 1 do
-                                HumanoidRootPart.CFrame = CFrame.new(18, SavedPosition.Y, 26220)
-                                RunService:Wait()
-                                if os.time() - starttime1 > 1 then
-                                    break
-                                end
+                        local starttime1 = os.time()
+                        while (HumanoidRootPart.Position - SavedPosition).Magnitude > 1 do
+                            HumanoidRootPart.CFrame = CFrame.new(18, SavedPosition.Y, 26220)
+                            task.wait()
+                            if os.time() - starttime1 > 2 then
+                                break
                             end
+                        end
                         HumanoidRootPart.Anchored = false
                     end
                 end
             end
         end
     end
-
-    --ping display
-    local ScreenGui = Instance.new("ScreenGui")
-    local Ping = Instance.new("TextLabel")
-    ScreenGui.Parent = game.CoreGui
-    ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    Ping.Name = "Ping"
-    Ping.Parent = ScreenGui
-    Ping.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    Ping.BackgroundTransparency = 1.000
-    Ping.BorderColor3 = Color3.fromRGB(255, 255, 255)
-    Ping.Position = UDim2.new(0.700000048, 0, 0, 0)
-    Ping.Size = UDim2.new(0, 125, 0, 25)
-    Ping.Font = Enum.Font.SourceSans
-    Ping.TextColor3 = Color3.fromRGB(253, 253, 253)
-    Ping.TextScaled = true
-    Ping.TextSize = 14.000
-    Ping.TextWrapped = true
-
-    local script = Instance.new('LocalScript', Ping)
-    local RunService = game:GetService("RunService")
-    RunService.RenderStepped:Connect(function(ping) 
-        script.Parent.Text = ("Ping: " ..game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString(math.round(2/ping))) -- your ping
-    end)
-    --
-    -- rejoin/reconnect when dc
-    repeat task.wait() until game.CoreGui:FindFirstChild('RobloxPromptGui')
-    local lp,po,ts = game:GetService('Players').LocalPlayer,game.CoreGui.RobloxPromptGui.promptOverlay,game:GetService('TeleportService')
-    po.ChildAdded:connect(function(a)
-        if a.Name == 'ErrorPrompt' then
-            repeat
-                ts:Teleport(game.PlaceId)
-                task.wait(2)
-            until false
-        end
-    end)
 end
