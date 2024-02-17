@@ -57,14 +57,24 @@ if game.PlaceId == 1417427737 then repeat task.wait(1) until game:IsLoaded()
         Rebirths2.Amount.Text = tostring(Rebirths.Value)
     end)
 
+--Reconnect
+    local po = game.CoreGui.RobloxPromptGui.promptOverlay
+    po.ChildAdded:connect(function(a)
+        if a.Name == 'ErrorPrompt' then
+            repeat
+                game:GetService("TeleportService"):Teleport(game.PlaceId, Players.LocalPlayer)
+                task.wait(2)
+            until false
+        end
+    end)
 -- Anti afk
-    game:GetService("Players").LocalPlayer.Idled:connect(function()
+    Players.LocalPlayer.Idled:connect(function()
         game:GetService("VirtualUser"):ClickButton2(Vector2.new())
     end)
 --Rejoin
     Workspace.Collapsed.Changed:connect(function()
     if Workspace.Collapsed.Value == true then
-        game:GetService("TeleportService"):Teleport(game.PlaceId, game:GetService("Players").LocalPlayer)
+        game:GetService("TeleportService"):Teleport(game.PlaceId, Players.LocalPlayer)
         end
     end)    
 
