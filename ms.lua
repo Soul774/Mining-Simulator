@@ -11,7 +11,7 @@ end)
 if game.PlaceId == 1417427737 then repeat task.wait(1) until game:IsLoaded()
 
     local SellTreshold = getgenv().SellTreshold or 30000
-    local Depth = getgenv().Depth or 205
+    local Depth = getgenv().Depth or 135
 
     local Players = game:GetService("Players")
     Players.LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("ScreenGui")
@@ -41,13 +41,12 @@ if game.PlaceId == 1417427737 then repeat task.wait(1) until game:IsLoaded()
     if Players.LocalPlayer.PlayerGui.ScreenGui.MainButtons:FindFirstChild("Surface") then
         Players.LocalPlayer.PlayerGui.ScreenGui.MainButtons.Surface:Destroy()
     end
-    if Players.LocalPlayer.PlayerGui.ScreenGui.Collapse:FindFirstChild("Progress") then
+    if Players.LocalPlayer.PlayerGui.ScreenGui:FindFirstChild("Collapse") then
         Players.LocalPlayer.PlayerGui.ScreenGui.Collapse.Visible = true
     end
-
+--Rebirth GUI
     local ExampleFrame = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("ScreenGui"):WaitForChild("StatsFrame"):WaitForChild("Tokens")
     local Rebirths = game:GetService("Players").LocalPlayer.leaderstats.Rebirths
-
     local Rebirths2 = ExampleFrame:Clone()
     Rebirths2.Parent = ExampleFrame.Parent
     Rebirths2.Position = UDim2.new(0, 0, 1.5, 15)
@@ -67,10 +66,11 @@ if game.PlaceId == 1417427737 then repeat task.wait(1) until game:IsLoaded()
             until false
         end
     end)
--- Anti afk
+--[[ Anti afk
     Players.LocalPlayer.Idled:connect(function()
         game:GetService("VirtualUser"):ClickButton2(Vector2.new())
     end)
+    ]]
 --Rejoin
     Workspace.Collapsed.Changed:connect(function()
     if Workspace.Collapsed.Value == true then
@@ -172,7 +172,7 @@ if game.PlaceId == 1417427737 then repeat task.wait(1) until game:IsLoaded()
             task.wait()
         end
     end)
-    
+
     local InventoryAmount = game.Players.LocalPlayer.PlayerGui.ScreenGui.StatsFrame2.Inventory.Amount
     local function GetInventoryAmount()
         local Amount = InventoryAmount.Text
@@ -183,7 +183,7 @@ if game.PlaceId == 1417427737 then repeat task.wait(1) until game:IsLoaded()
     end
 
     local Character = game.Players.LocalPlayer.Character
-    local SellArea = CFrame.new(41.96064, 16.755, -1239.64648)
+    local SellArea = CFrame.new(42, 13, -1239)
     while true do
         task.wait()
         if HumanoidRootPart then
