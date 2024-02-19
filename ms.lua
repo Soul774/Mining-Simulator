@@ -14,6 +14,9 @@ if game.PlaceId == 1417427737 then repeat task.wait(1) until game:IsLoaded()
     local Depth = getgenv().Depth or 135
 
     local Players = game:GetService("Players")
+    local Client = game.Players.LocalPlayer
+    local Remote
+
     Players.LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("ScreenGui")
     while Players.LocalPlayer.PlayerGui.ScreenGui.LoadingFrame.BackgroundTransparency == 0 do
         for i, connection in pairs(getconnections(Players.LocalPlayer.PlayerGui.ScreenGui.LoadingFrame.Quality.LowQuality.MouseButton1Down)) do
@@ -22,9 +25,9 @@ if game.PlaceId == 1417427737 then repeat task.wait(1) until game:IsLoaded()
         task.wait(1)
     end
     while true do
-        if pcall(function() game.Players.LocalPlayer.leaderstats:WaitForChild("Blocks Mined") end) then
-            if pcall(function() game.Players.LocalPlayer.PlayerGui.ScreenGui.StatsFrame.Coins:FindFirstChild("Amount") end) then
-                if game.Players.LocalPlayer.PlayerGui.ScreenGui.StatsFrame.Tokens.Amount.Text ~= "Loading..." then
+        if pcall(function() Client.leaderstats:WaitForChild("Blocks Mined") end) then
+            if pcall(function() Client.PlayerGui.ScreenGui.StatsFrame.Coins:FindFirstChild("Amount") end) then
+                if Client.PlayerGui.ScreenGui.StatsFrame.Tokens.Amount.Text ~= "Loading..." then
                     break
                 end
             end
@@ -66,27 +69,20 @@ if game.PlaceId == 1417427737 then repeat task.wait(1) until game:IsLoaded()
             until false
         end
     end)
---[[ Anti afk
-    Players.LocalPlayer.Idled:connect(function()
-        game:GetService("VirtualUser"):ClickButton2(Vector2.new())
-    end)
-    ]]
 --Rejoin
-    Workspace.Collapsed.Changed:connect(function()
-    if Workspace.Collapsed.Value == true then
+    workspace.Collapsed.Changed:connect(function()
+    if workspace.Collapsed.Value == true then
         game:GetService("TeleportService"):Teleport(game.PlaceId, Players.LocalPlayer)
         end
     end)    
-
-    local Remote
 
     local Data = getsenv(Players.LocalPlayer.PlayerGui.ScreenGui.ClientScript).displayCurrent
     local Values = getupvalue(Data,8)
     Remote = Values["RemoteEvent"]
     Data, Values = nil
 
-    local HumanoidRootPart = game.Players.LocalPlayer.Character.HumanoidRootPart
-    local humanoid = game.Players.LocalPlayer.Character.Humanoid
+    local HumanoidRootPart = Client.Character.HumanoidRootPart
+    local humanoid = Client.Character.Humanoid
     humanoid.WalkSpeed = 0
     humanoid.JumpPower = 0
     HumanoidRootPart.Anchored = true
@@ -116,7 +112,7 @@ if game.PlaceId == 1417427737 then repeat task.wait(1) until game:IsLoaded()
     end
 
 --Dig to depth
-    local depth = Split(game.Players.LocalPlayer.PlayerGui.ScreenGui.TopInfoFrame.Depth.Text," ")
+    local depth = Split(Client.PlayerGui.ScreenGui.TopInfoFrame.Depth.Text," ")
     while tonumber(depth[1]) < Depth do
         local min = HumanoidRootPart.CFrame + Vector3.new(-1,-10,-1)
         local max = HumanoidRootPart.CFrame + Vector3.new(1,0,1)
@@ -126,11 +122,11 @@ if game.PlaceId == 1417427737 then repeat task.wait(1) until game:IsLoaded()
             Remote:FireServer("MineBlock",{{block.Parent}})
             task.wait()
         end
-        depth = Split(game.Players.LocalPlayer.PlayerGui.ScreenGui.TopInfoFrame.Depth.Text," ")
+        depth = Split(Client.PlayerGui.ScreenGui.TopInfoFrame.Depth.Text," ")
         task.wait()
     end
 
-    local CoinsAmount = game.Players.LocalPlayer.leaderstats.Coins
+    local CoinsAmount = Client.leaderstats.Coins
     local function GetCoinsAmount()
         local Amount = CoinsAmount.Value
         Amount = Amount:gsub(',', '')
@@ -138,9 +134,9 @@ if game.PlaceId == 1417427737 then repeat task.wait(1) until game:IsLoaded()
     end
 
 --Recover
+    local Character = Client.Character
     local recovering = false
-    local player = game.Players.LocalPlayer
-    local DepthAmount = player.PlayerGui.ScreenGui.TopInfoFrame.Depth
+    local DepthAmount = Client.PlayerGui.ScreenGui.TopInfoFrame.Depth
     DepthAmount.Changed:Connect(function()
         task.spawn(function()
             local depth = Split(DepthAmount.Text, " ")
@@ -149,14 +145,14 @@ if game.PlaceId == 1417427737 then repeat task.wait(1) until game:IsLoaded()
                 HumanoidRootPart.Anchored = true
                 task.wait(1)
                 Remote:FireServer("MoveTo", {{"LavaSpawn"}})
-                wait(1)
+                task.wait(1)
                 local pos = Vector3.new(21, 9.5, 26285)
                 part.Position = pos
                 task.wait(1)
                 HumanoidRootPart.Anchored = false
                 while HumanoidRootPart.Position.Z > 26220 do
                     HumanoidRootPart.CFrame = CFrame.new(Vector3.new(HumanoidRootPart.Position.X, 13.05, HumanoidRootPart.Position.Z - 0.5))
-                    task.wait(0.05)
+                    task.wait(0.03)
                 end
                 HumanoidRootPart.CFrame = CFrame.new(18, 10, 26220)
                 task.wait(5)
@@ -165,7 +161,7 @@ if game.PlaceId == 1417427737 then repeat task.wait(1) until game:IsLoaded()
         end)
     end)
 
-    local RebirthsAmount = game.Players.LocalPlayer.leaderstats.Rebirths
+    local RebirthsAmount = Client.leaderstats.Rebirths
     game:GetService("RunService"):BindToRenderStep("Rebirth", Enum.RenderPriority.Camera.Value, function()
         while GetCoinsAmount() >= (10000000 * (RebirthsAmount.Value + 1)) do
             Remote:FireServer("Rebirth",{{}})
@@ -173,7 +169,7 @@ if game.PlaceId == 1417427737 then repeat task.wait(1) until game:IsLoaded()
         end
     end)
 
-    local InventoryAmount = game.Players.LocalPlayer.PlayerGui.ScreenGui.StatsFrame2.Inventory.Amount
+    local InventoryAmount = Client.PlayerGui.ScreenGui.StatsFrame2.Inventory.Amount
     local function GetInventoryAmount()
         local Amount = InventoryAmount.Text
         Amount = Amount:gsub('%s+', '')
@@ -182,7 +178,6 @@ if game.PlaceId == 1417427737 then repeat task.wait(1) until game:IsLoaded()
         return tonumber(Inventory[1])
     end
 
-    local Character = game.Players.LocalPlayer.Character
     local SellArea = CFrame.new(42, 13, -1239)
     while true do
         task.wait()
@@ -196,7 +191,7 @@ if game.PlaceId == 1417427737 then repeat task.wait(1) until game:IsLoaded()
                     Remote:FireServer("MineBlock", {{block.Parent}})
                     repeat
                         task.wait()
-                    until not recovering
+                    until not recovering or GetInventoryAmount() >= SellTreshold
                 end
                 if GetInventoryAmount() >= SellTreshold then
                     if Character and HumanoidRootPart then
