@@ -141,26 +141,17 @@ if game.PlaceId == 1417427737 then repeat task.wait(1) until game:IsLoaded()
         task.spawn(function()
             local depth = Split(DepthAmount.Text, " ")
             if tonumber(depth[1]) >= 1000 and not recovering then
-                recovering = true
-                HumanoidRootPart.Anchored = true
-                task.wait(1)
-                Remote:FireServer("MoveTo", {{"LavaSpawn"}})
-                task.wait(1)
-                local pos = Vector3.new(21, 9.5, 26285)
-                part.Position = pos
-                task.wait(1)
-                HumanoidRootPart.Anchored = false
-                while HumanoidRootPart.Position.Z > 26220 do
-                    HumanoidRootPart.CFrame = CFrame.new(Vector3.new(HumanoidRootPart.Position.X, 13.05, HumanoidRootPart.Position.Z - 0.5))
-                    task.wait(0.03)
-                end
-                HumanoidRootPart.CFrame = CFrame.new(18, 10, 26220)
-                task.wait(5)
+                print("recovering true")
+                HumanoidRootPart.CFrame = CFrame.new(18, Depth, 26220)
+                print("teleported")
+                task.wait()
                 recovering = false
+                print("recovering false")
             end
         end)
     end)
 
+--Rebirth
     local RebirthsAmount = Client.leaderstats.Rebirths
     game:GetService("RunService"):BindToRenderStep("Rebirth", Enum.RenderPriority.Camera.Value, function()
         while GetCoinsAmount() >= (10000000 * (RebirthsAmount.Value + 1)) do
@@ -178,34 +169,29 @@ if game.PlaceId == 1417427737 then repeat task.wait(1) until game:IsLoaded()
         return tonumber(Inventory[1])
     end
 
+-- Mine Aura + Sell
     local SellArea = CFrame.new(42, 14, -1239)
     while task.wait() do
-        if HumanoidRootPart then
-            local minp = HumanoidRootPart.CFrame.Position - Vector3.new(5, 5, 5)
-            local maxp = HumanoidRootPart.CFrame.Position + Vector3.new(5, 5, 5)
-            local region = Region3.new(minp, maxp)
-            local parts = workspace:FindPartsInRegion3WithWhiteList(region, {game.Workspace.Blocks}, 50)
-            for _, block in ipairs(parts) do    
-                if block:IsA("BasePart") and not recovering and GetInventoryAmount() <= SellTreshold then
-                    Remote:FireServer("MineBlock", {{block.Parent}})
-                    task.wait()
-                end
-            end
-            if GetInventoryAmount() >= SellTreshold then
-                local SavedPosition = HumanoidRootPart.Position
-                while GetInventoryAmount() >= SellTreshold and not recovering do
-                    Remote:FireServer("SellItems", {{}})
-                    HumanoidRootPart.CFrame = SellArea
-                    task.wait()
-                end
-                local starttime1 = os.time()
-                while (HumanoidRootPart.Position - SavedPosition).Magnitude > 1 do
-                    HumanoidRootPart.CFrame = CFrame.new(18, SavedPosition.Y, 26220)
-                    task.wait()
-                    if os.time() - starttime1 > 2 then
-                        break
-                    end
-                end
+        local minp = HumanoidRootPart.CFrame.Position - Vector3.new(5, 5, 5)
+        local maxp = HumanoidRootPart.CFrame.Position + Vector3.new(5, 5, 5)
+        local region = Region3.new(minp, maxp)
+        local parts = workspace:FindPartsInRegion3WithWhiteList(region, {game.Workspace.Blocks}, 50)
+        for _, block in ipairs(parts) do    
+            Remote:FireServer("MineBlock", {{block.Parent}})
+            task.wait()
+        end
+        local SavedPosition = HumanoidRootPart.Position
+        while GetInventoryAmount() >= SellTreshold and not recovering do
+            Remote:FireServer("SellItems", {{}})
+            HumanoidRootPart.CFrame = SellArea
+            task.wait()
+        end
+        local starttime1 = os.time()
+        while (HumanoidRootPart.Position - SavedPosition).Magnitude > 1 do
+            HumanoidRootPart.CFrame = CFrame.new(18, SavedPosition.Y, 26220)
+            task.wait()
+            if os.time() - starttime1 > 2 then
+                break
             end
         end
     end
