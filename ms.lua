@@ -48,7 +48,7 @@ if game.PlaceId == 1417427737 then repeat task.wait(1) until game:IsLoaded()
         Players.LocalPlayer.PlayerGui.ScreenGui.Collapse.Visible = true
     end
 --Rebirth GUI
-    local ExampleFrame = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("ScreenGui"):WaitForChild("StatsFrame"):WaitForChild("Tokens")
+    local ExampleFrame = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("ScreenGui"):WaitForChild("StatsFrame"):WaitForChild("Inventory")
     local Rebirths = game:GetService("Players").LocalPlayer.leaderstats.Rebirths
     local Rebirths2 = ExampleFrame:Clone()
     Rebirths2.Parent = ExampleFrame.Parent
@@ -57,6 +57,15 @@ if game.PlaceId == 1417427737 then repeat task.wait(1) until game:IsLoaded()
     Rebirths2.Amount.Text = tostring(Rebirths.Value)
     Rebirths:GetPropertyChangedSignal("Value"):Connect(function()
         Rebirths2.Amount.Text = tostring(Rebirths.Value)
+    end)
+    local BlocksMined = game:GetService("Players").LocalPlayer.leaderstats["Blocks Mined"]
+    local BlocksMined2 = ExampleFrame:Clone()
+    BlocksMined2.Parent = ExampleFrame.Parent
+    BlocksMined2.Position = UDim2.new(0, 0, 2, 20)
+    BlocksMined2.Logo.Image = ""
+    BlocksMined2.Amount.Text = tostring(BlocksMined.Value)
+    BlocksMined:GetPropertyChangedSignal("Value"):Connect(function()
+        BlocksMined2.Amount.Text = tostring(BlocksMined.Value)
     end)
 
 --Reconnect
@@ -196,3 +205,4 @@ if game.PlaceId == 1417427737 then repeat task.wait(1) until game:IsLoaded()
         end
     end
 end
+
