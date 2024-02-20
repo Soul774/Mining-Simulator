@@ -11,7 +11,7 @@ end)
 if game.PlaceId == 1417427737 then repeat task.wait(1) until game:IsLoaded()
 
     local SellTreshold = getgenv().SellTreshold or 30000
-    local Depth = getgenv().Depth or 135
+    local Depth = getgenv().Depth or 205
 
     local Players = game:GetService("Players")
     local Client = game.Players.LocalPlayer
@@ -178,41 +178,32 @@ if game.PlaceId == 1417427737 then repeat task.wait(1) until game:IsLoaded()
         return tonumber(Inventory[1])
     end
 
-    local SellArea = CFrame.new(42, 13, -1239)
-    while true do
-        task.wait()
+    local SellArea = CFrame.new(42, 14, -1239)
+    while task.wait() do
         if HumanoidRootPart then
             local minp = HumanoidRootPart.CFrame.Position - Vector3.new(5, 5, 5)
             local maxp = HumanoidRootPart.CFrame.Position + Vector3.new(5, 5, 5)
             local region = Region3.new(minp, maxp)
             local parts = workspace:FindPartsInRegion3WithWhiteList(region, {game.Workspace.Blocks}, 50)
-            for _, block in ipairs(parts) do
-                if block:IsA("BasePart") then
+            for _, block in ipairs(parts) do    
+                if block:IsA("BasePart") and not recovering and GetInventoryAmount() <= SellTreshold then
                     Remote:FireServer("MineBlock", {{block.Parent}})
-                    repeat
-                        task.wait()
-                    until not recovering or GetInventoryAmount() >= SellTreshold
+                    task.wait()
                 end
-                if GetInventoryAmount() >= SellTreshold then
-                    if Character and HumanoidRootPart then
-                        local SavedPosition = HumanoidRootPart.Position
-                        while GetInventoryAmount() >= SellTreshold do
-                            Remote:FireServer("SellItems", {{}})
-                            HumanoidRootPart.CFrame = SellArea
-                            repeat
-                                task.wait()
-                            until not recovering
-                        end
-                        HumanoidRootPart.Anchored = true
-                        local starttime1 = os.time()
-                        while (HumanoidRootPart.Position - SavedPosition).Magnitude > 1 do
-                            HumanoidRootPart.CFrame = CFrame.new(18, SavedPosition.Y, 26220)
-                            task.wait()
-                            if os.time() - starttime1 > 2 then
-                                break
-                            end
-                        end
-                        HumanoidRootPart.Anchored = false
+            end
+            if GetInventoryAmount() >= SellTreshold then
+                local SavedPosition = HumanoidRootPart.Position
+                while GetInventoryAmount() >= SellTreshold and not recovering do
+                    Remote:FireServer("SellItems", {{}})
+                    HumanoidRootPart.CFrame = SellArea
+                    task.wait()
+                end
+                local starttime1 = os.time()
+                while (HumanoidRootPart.Position - SavedPosition).Magnitude > 1 do
+                    HumanoidRootPart.CFrame = CFrame.new(18, SavedPosition.Y, 26220)
+                    task.wait()
+                    if os.time() - starttime1 > 2 then
+                        break
                     end
                 end
             end
