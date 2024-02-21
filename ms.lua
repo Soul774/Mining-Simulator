@@ -58,16 +58,17 @@ if game.PlaceId == 1417427737 then repeat task.wait(1) until game:IsLoaded()
     Rebirths:GetPropertyChangedSignal("Value"):Connect(function()
         Rebirths2.Amount.Text = tostring(Rebirths.Value)
     end)
+    --[[
     local BlocksMined = game:GetService("Players").LocalPlayer.leaderstats["Blocks Mined"]
     local BlocksMined2 = ExampleFrame:Clone()
     BlocksMined2.Parent = ExampleFrame.Parent
     BlocksMined2.Position = UDim2.new(0, 0, 2, 20)
-    BlocksMined2.Logo.Image = ""
+    BlocksMined2.Logo.Image = "rbxassetid://10677632570"
     BlocksMined2.Amount.Text = tostring(BlocksMined.Value)
     BlocksMined:GetPropertyChangedSignal("Value"):Connect(function()
         BlocksMined2.Amount.Text = tostring(BlocksMined.Value)
     end)
-
+    ]]
 --Reconnect
     local po = game.CoreGui.RobloxPromptGui.promptOverlay
     po.ChildAdded:connect(function(a)
@@ -205,4 +206,3 @@ if game.PlaceId == 1417427737 then repeat task.wait(1) until game:IsLoaded()
         end
     end
 end
-
