@@ -183,7 +183,7 @@ if game.PlaceId == 1417427737 then repeat task.wait(1) until game:IsLoaded()
     local RenderStepped = game:GetService("RunService").RenderStepped
 
     local SellArea = CFrame.new(42, 14, -1239)
-    while true do
+    while Stepped:Wait() do
         local minp = HumanoidRootPart.CFrame.Position - Vector3.new(5, 5, 5)
         local maxp = HumanoidRootPart.CFrame.Position + Vector3.new(5, 5, 5)
         local region = Region3.new(minp, maxp)
