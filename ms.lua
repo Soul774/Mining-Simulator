@@ -34,7 +34,7 @@ if game.PlaceId == 1417427737 then repeat task.wait(1) until game:IsLoaded()
         end
         task.wait(1)
     end
-
+    
     if Players.LocalPlayer.PlayerGui.ScreenGui:FindFirstChild("TeleporterFrame") then
         Players.LocalPlayer.PlayerGui.ScreenGui.TeleporterFrame:Destroy()
     end
@@ -178,23 +178,25 @@ if game.PlaceId == 1417427737 then repeat task.wait(1) until game:IsLoaded()
         local Inventory = Amount:split("/")
         return tonumber(Inventory[1])
     end
-
 -- Mine Aura + Sell
+    local Stepped = game:GetService("RunService").Stepped
+    local RenderStepped = game:GetService("RunService").RenderStepped
+
     local SellArea = CFrame.new(42, 14, -1239)
-    while task.wait() do
+    while true do
         local minp = HumanoidRootPart.CFrame.Position - Vector3.new(5, 5, 5)
         local maxp = HumanoidRootPart.CFrame.Position + Vector3.new(5, 5, 5)
         local region = Region3.new(minp, maxp)
         local parts = workspace:FindPartsInRegion3WithWhiteList(region, {game.Workspace.Blocks}, 50)
         for _, block in ipairs(parts) do    
             Remote:FireServer("MineBlock", {{block.Parent}})
-            task.wait()
+            RenderStepped:Wait()
         end
         local SavedPosition = HumanoidRootPart.Position
         while GetInventoryAmount() >= SellTreshold and not recovering do
             Remote:FireServer("SellItems", {{}})
             HumanoidRootPart.CFrame = SellArea
-            task.wait()
+            Stepped:Wait()
         end
         local starttime1 = os.time()
         while (HumanoidRootPart.Position - SavedPosition).Magnitude > 1 do
