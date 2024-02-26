@@ -201,7 +201,7 @@ if game.PlaceId == 1417427737 then repeat task.wait(1) until game:IsLoaded()
         local starttime1 = os.time()
         while (HumanoidRootPart.Position - SavedPosition).Magnitude > 1 do
             HumanoidRootPart.CFrame = CFrame.new(18, SavedPosition.Y, 26220)
-            task.wait()
+            RenderStepped:Wait()
             if os.time() - starttime1 > 2 then
                 break
             end
