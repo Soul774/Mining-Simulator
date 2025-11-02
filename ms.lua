@@ -1,14 +1,19 @@
 queueteleport = (syn and syn.queue_on_teleport) or queue_on_teleport or (fluxus and fluxus.queue_on_teleport)
-local Players = game:GetService("Players")
 local TeleportCheck = false
-Players.LocalPlayer.OnTeleport:Connect(function(State)
+game:GetService("Players").LocalPlayer.OnTeleport:Connect(function(State)
     if queueteleport and (not TeleportCheck) then
         TeleportCheck = true
         queueteleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/Soul774/Mining-Simulator/main/ms.lua'))()")
     end
 end)
 
-if game.PlaceId == 1417427737 then repeat task.wait(1) until game:IsLoaded()
+if game.GameId ~= 1417427737 then
+    print("Mining Simulator: Incorrect game.")
+    return
+end
+
+-- if game.PlaceId == 1417427737 then repeat task.wait(1) until game:IsLoaded()
+   if game.PlaceId == 1417427737 then game.Loaded:Wait() end
 
     local SellTreshold = getgenv().SellTreshold or 30000
     local Depth = getgenv().Depth or 205
@@ -178,6 +183,7 @@ if game.PlaceId == 1417427737 then repeat task.wait(1) until game:IsLoaded()
         local Inventory = Amount:split("/")
         return tonumber(Inventory[1])
     end
+
 -- Mine Aura + Sell
     local Stepped = game:GetService("RunService").Stepped
     local RenderStepped = game:GetService("RunService").RenderStepped
@@ -208,3 +214,4 @@ if game.PlaceId == 1417427737 then repeat task.wait(1) until game:IsLoaded()
         end
     end
 end
+
