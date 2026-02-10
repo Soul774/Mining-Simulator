@@ -189,7 +189,7 @@ end
     local RenderStepped = game:GetService("RunService").RenderStepped
 
     local SellArea = CFrame.new(42, 14, -1239)
-    while Stepped:Wait() do
+    RenderStepped:Connect(function()
         local minp = HumanoidRootPart.CFrame.Position - Vector3.new(5, 5, 5)
         local maxp = HumanoidRootPart.CFrame.Position + Vector3.new(5, 5, 5)
         local region = Region3.new(minp, maxp)
@@ -212,6 +212,5 @@ end
                 break
             end
         end
-    end
+    end)
 end
-
